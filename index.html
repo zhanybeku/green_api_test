@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Green API Test</title>
+    <style>
+      * {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+      .left-half {
+        width: 50%;
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .right-half {
+        width: 50%;
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .input-field,
+      .large-input-field,
+      .button {
+        display: block;
+        margin-bottom: 15px;
+        padding: 10px;
+        font-size: 16px;
+        width: 100%;
+        max-width: 300px;
+        box-sizing: border-box;
+      }
+      .large-input-field {
+        height: 100px;
+      }
+      form {
+        width: 100%;
+        max-width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .output-box {
+        width: 100%;
+        height: calc(100% - 30px);
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid black;
+        border-radius: 10px;
+        box-sizing: border-box;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-half">
+        <form>
+          <input
+            type="text"
+            id="idInstance"
+            placeholder="idInstance"
+            class="input-field"
+          />
+          <input
+            type="text"
+            id="apiTokenInstance"
+            placeholder="ApiTokenInstance"
+            class="input-field"
+          />
+          <button type="button" class="button" onclick="getSettings()">
+            getSettings
+          </button>
+          <button type="button" class="button" onclick="getStateInstance()">
+            getStateInstance
+          </button>
+        </form>
+        <br /><br />
+        <form>
+          <input
+            type="text"
+            id="phoneNumberText"
+            placeholder="Номер телефона"
+            class="input-field"
+          />
+          <textarea
+            placeholder="Текст сообщения"
+            id="messageText"
+            class="large-input-field"
+          ></textarea>
+          <button type="button" class="button" onclick="sendMessage()">
+            sendMessage
+          </button>
+        </form>
+        <br /><br />
+        <form>
+          <input
+            type="text"
+            id="phoneNumberMedia"
+            placeholder="Номер телефона"
+            class="input-field"
+          />
+          <input
+            type="text"
+            id="mediaUrl"
+            placeholder="Ссылка на документ"
+            class="input-field"
+          />
+          <button type="button" class="button" onclick="sendFileByUrl()">
+            sendFileByUrl
+          </button>
+        </form>
+      </div>
+      <div class="right-half">
+        <div class="output-title">Ответ:</div>
+        <div id="output" class="output-box"></div>
+      </div>
+    </div>
+
+    <script>
+      // getSettings:
+      async function getSettings() {
+        const idInstance = document.getElementById("idInstance").value;
+        const apiTokenInstance =
+          document.getElementById("apiTokenInstance").value;
+        const apiUrl = "https://api.greenapi.com";
+        const url = `${apiUrl}/waInstance${idInstance}/getSettings/${apiTokenInstance}`;
+
+        try {
+          const response = await fetch(url, { method: "GET" });
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+          const data = await response.json();
+          document.getElementById("output").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById(
+            "output"
+          ).textContent = `Request failed: ${error.message}`;
+        }
+      }
+
+      // getStateInstance:
+      async function getStateInstance() {
+        const idInstance = document.getElementById("idInstance").value;
+        const apiTokenInstance =
+          document.getElementById("apiTokenInstance").value;
+        const apiUrl = "https://api.greenapi.com";
+        const url = `${apiUrl}/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`;
+
+        try {
+          const response = await fetch(url, { method: "GET" });
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+          const data = await response.json();
+          document.getElementById("output").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById(
+            "output"
+          ).textContent = `Request failed: ${error.message}`;
+        }
+      }
+
+      // sendMessage:
+      async function sendMessage() {
+        const idInstance = document.getElementById("idInstance").value;
+        const apiTokenInstance =
+          document.getElementById("apiTokenInstance").value;
+        const phoneNumber = document.getElementById("phoneNumberText").value;
+        const message = document.getElementById("messageText").value;
+
+        if (!idInstance || !apiTokenInstance || !phoneNumber || !message) {
+          console.error("All fields are required.");
+          document.getElementById("output").textContent =
+            "All fields are required.";
+          return;
+        }
+
+        const apiUrl = "https://api.greenapi.com";
+        const url = `${apiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`;
+
+        const payload = {
+          chatId: `${phoneNumber}@c.us`,
+          message: message,
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          document.getElementById("output").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById(
+            "output"
+          ).textContent = `Request failed: ${error.message}`;
+        }
+      }
+
+      // sendFileByURL:
+      async function sendFileByUrl() {
+        const idInstance = document.getElementById("idInstance").value;
+        const apiTokenInstance =
+          document.getElementById("apiTokenInstance").value;
+        const phoneNumber = document.getElementById("phoneNumberMedia").value;
+        const mediaUrl = document.getElementById("mediaUrl").value;
+
+        if (!idInstance || !apiTokenInstance || !phoneNumber || !mediaUrl) {
+          console.error("All fields are required.");
+          document.getElementById("output").textContent =
+            "All fields are required.";
+          return;
+        }
+
+        const fileName = mediaUrl.split("/").pop();
+
+        const apiUrl = "https://api.greenapi.com";
+        const url = `${apiUrl}/waInstance${idInstance}/sendFileByUrl/${apiTokenInstance}`;
+
+        const payload = {
+          chatId: `${phoneNumber}@c.us`,
+          urlFile: mediaUrl,
+          fileName: fileName,
+          caption: "",
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          document.getElementById("output").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById(
+            "output"
+          ).textContent = `Request failed: ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>
