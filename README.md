@@ -2,6 +2,8 @@
 
 ### Russian:
 
+Превью страницы [здесь](https://html-preview.github.io/?url=https://github.com/zhanybeku/green_api_test/blob/main/index.html).
+
 Страница на языке HTML, позволяющая отправлять текстовые сообщения и файлы через URL с помощью инстанса Green API.  
 Для работы со страницей необходимо:
 
@@ -37,6 +39,8 @@
       - `caption` оставлен пустым ввиду отсутствия отведенного на него поля в предоставленном макете.
 
 ### English:
+
+Page preview is [here](https://html-preview.github.io/?url=https://github.com/zhanybeku/green_api_test/blob/main/index.html).
 
 This is an HTML page that allows sending text messages and files via URL using a Green API instance.  
 To use the page, follow these steps:
